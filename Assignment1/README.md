@@ -24,7 +24,7 @@
 
 - Run the following commmand on the terminal and enter the details accordingly.
 
-```
+```python
 python TSP.py
 ```
 

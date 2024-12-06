@@ -1,5 +1,5 @@
 from utils.graph import Graph
-from utils.search import SimpleSearch
+from utils.simple_search import SimpleSearch
 
 
 class TSPSolver (SimpleSearch):

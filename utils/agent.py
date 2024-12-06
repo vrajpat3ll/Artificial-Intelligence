@@ -5,32 +5,24 @@ class Agent:
     '''
 
     def __init__(self) -> None:
-        self.OPEN: list = []
-        self.CLOSED: list = []
+        self.OPEN = []
+        self.CLOSED = []
         self.nodesExpanded = 0
 
-    def RemoveSeen(self, moves):
-        if len(moves) == 0:
-            return []
-
-        newMoves = []
-        for move in moves:
-            if move not in self.OPEN and move not in self.CLOSED:
-                newMoves.append(move)
-        return newMoves
+    
 
     def PlanningSearch(self, startNode, goalNode, traversal, solution, dbg):
-        # domain-dependent
+        # search-dependent
         pass
 
     def ConfigSearch(self, startNode, traversal, solution, dbg):
-        # domain-dependent
+        # search-dependent
         pass
 
     def MoveGen(self, startNode):
         # domain-dependent
         pass
 
-    def GoalTest(self, node) -> bool:
+    def GoalTest(self, node):
         # domain-dependent
-        return False
+        pass

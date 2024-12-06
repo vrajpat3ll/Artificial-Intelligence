@@ -1,6 +1,10 @@
 from utils.agent import Agent
 
+
 class SimpleSearch(Agent):
+    ''' can also be called blind_search
+    '''
+
     # taken from notes
     def FindLink(self, node):
         for child, parent, _ in self.CLOSED:
@@ -19,11 +23,11 @@ class SimpleSearch(Agent):
         return path
 
     # taken from notes
-    def MakePairs(self, nodeList, parent, depth):
+    def MakePairs(self, nodeList, parent, depth: int):
         return [[nodeList[i], parent, depth] for i in range(len(nodeList))]
 
     # taken from notes
-    def PlanningSearch(self, startNode, goalNode, traversal='bfs', dbg=True):
+    def PlanningSearch(self, startNode, goalNode, traversal: str = 'bfs', dbg: bool = True):
         self.OPEN = [[startNode, None, 0]]
         self.CLOSED = []
 
@@ -59,7 +63,7 @@ class SimpleSearch(Agent):
         return []
 
     # taken from notes
-    def ConfigSearch(self, startNode, traversal='bfs', solution='one', dbg=True):
+    def ConfigSearch(self, startNode, traversal: str = 'bfs', solution: str = 'one', dbg: bool = True):
 
         self.OPEN = [startNode]
         solutions = []
@@ -97,42 +101,43 @@ class SimpleSearch(Agent):
         return solutions
 
     # taken from notes
-    def DFID(self, startNode, dbg=True):
+    def DFID(self, startNode, termination_criteria: function, dbg: bool = True):
+
+        # taken from notes
+        def _DB_DFS(startNode, depthBound: int, dbg: bool = True):
+            self.OPEN = [[startNode, None, 0]]
+            self.CLOSED = []
+            while len(self.OPEN) > 0:
+                nodePair = self.OPEN[0]
+                candidate, depth = nodePair[0], nodePair[2]
+
+                if self.GoalTest(candidate):
+                    return candidate, self.ReconstructPath(nodePair)
+
+                self.CLOSED.append(nodePair)
+
+                if depth < depthBound:
+                    children = self.MoveGen(candidate)
+
+                    newNodes = self.RemoveSeen(children)
+
+                    newPairs = self.MakePairs(newNodes, candidate, depth + 1)
+
+                    self.OPEN = newPairs + self.OPEN  # DFS as we traverse through the newPairs first
+
+                self.OPEN.remove(nodePair)
+
+                if dbg:
+                    print(f"{depth=} | {len(self.OPEN)=} ")
+            return []
+
         depthBound = 0
-        while True:
-            solution = self._DB_DFS(startNode, depthBound, dbg)
+        while termination_criteria():
+            solution = _DB_DFS(startNode, depthBound=depthBound, dbg=dbg)
 
             depthBound += 1
-            
+
             # if found 1 solution, exit the loop
             if len(solution) != 0:
                 break
         return solution
-
-    # taken from notes
-    def _DB_DFS(self, startNode, depthBound, dbg=True):
-        self.OPEN = [[startNode, None, 0]]
-        self.CLOSED = []
-        while len(self.OPEN) > 0:
-            nodePair = self.OPEN[0]
-            candidate, depth = nodePair[0], nodePair[2]
-
-            if self.GoalTest(candidate):
-                return candidate, self.ReconstructPath(nodePair)
-
-            self.CLOSED.append(nodePair)
-
-            if depth < depthBound:
-                children = self.MoveGen(candidate)
-
-                newNodes = self.RemoveSeen(children)
-
-                newPairs = self.MakePairs(newNodes, candidate, depth + 1)
-
-                self.OPEN = newPairs + self.OPEN
-
-            self.OPEN.remove(nodePair)
-
-            if dbg:
-                print(f"{depth=} | {len(self.OPEN)=} ")
-        return []

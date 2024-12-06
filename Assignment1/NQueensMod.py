@@ -1,4 +1,4 @@
-from utils.search import SimpleSearch
+from utils.simple_search import SimpleSearch
 
 
 class State:
